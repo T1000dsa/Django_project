@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
+<h1>{{ title|capfirst }}</h1>
 {% block content %}
 <h1>{{ title|capfirst }}</h1>
 <p>{{ content_1|capfirst }}</p>
-<p>{{ content_2|capfirst }}</p>
-<p>{{ content_3|capfirst }}</p>
-<ul>
-    <li><a href="{% url 'home_name' %}">Home</a></li>
-    {% for item in list %}
-        <li><a href="{% url item.url_name %}">{{ item.title|capfirst }}</a></li>
+<form actions="" method="POST">
+    {% csrf_token %}
+    <div class="form-error">{{ form.non_fields_errors }}</div>
+    {% for f in form %}
+    <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
+    <div class="form-error">{{ f.errors }}</div>
     {% endfor %}
-</ul>
+    <p><button type="submit">Send</button>
+</form>
 {% endblock %}

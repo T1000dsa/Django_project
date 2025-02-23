@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ post.title|capfirst }}</h2>
+<p>Category: {{ post.cat }}</p>
+{% with post.tags.all as tags_html %}
+{% if tags_html %}
+<p>Tags:</p>
+    {% for item in tags_html %}
+    </t>{{ item.tag }}<br>
+    {% endfor %}
+{% endif %}
+{%  endwith %}
+{% if post.photo %}
+<p><img class="img-article-left" scr="{{ post.photo.url }}"></p>
+{% endif %}
+<br>
+{{ post.content }}
+{% endblock %}

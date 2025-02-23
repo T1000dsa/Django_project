@@ -1,13 +1,8 @@
 {% extends 'base.html' %}
+<h1>{{ title|capfirst }}</h1>
 {% block content %}
 <h1>{{ title|capfirst }}</h1>
 <p>{{ content_1|capfirst }}</p>
-<p>{{ content_2|join:" | " }}</p>
+<p>{{ content_2|join:" " }}</p>
 <p>{{ content_3|capfirst }}</p>
-<ul>
-    <li><a href="{% url 'home_name' %}">Home</a></li>
-    {% for item in list %}
-        <li><a href="{% url item.url_name %}">{{ item.title|capfirst }}</a></li>
-    {% endfor %}
-</ul>
 {% endblock %}

@@ -2,14 +2,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title|default:'error'|capfirst }}</title>
-    <link type="text/css" href="{% static 'main/css/styles.css' %}" rel="stylesheet" />
+    <title>{{ title }}</title>
+	<link type="text/css" href="{% static 'main/css/styles.css' %}" rel="stylesheet"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-{% block content %}
-
-{% endblock %}
+    {% include 'main/includes/nav.html' with only="content" %}
+    <br>
+    {% block content %} 
+    {% endblock %}
+    <br>
+    {% include 'main/includes/nav.html' with only="content" %}
 </body>
 </html>

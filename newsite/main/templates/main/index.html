@@ -1,23 +1,17 @@
 {% extends 'base.html' %}
+{% load main_tags %}
 {% block content %}
-{% include 'main/includes/nav.html' %}
-
 <h1>{{ title|default:'without title'|capfirst }}</h1>
-<ul>
-    <li><a href="{% url 'home_name' %}">Home</a></li>
-    {% for item in list %}
-        <li><a href="{% url item.url_name %}">{{ item.title|capfirst }}</a></li>
+    {% if not tags_bool %}
+    {% for item in menu %}
+        <br><a href="{% url item.url_name %}">{{ item.title|capfirst }}</a>
     {% endfor %}
-</ul>
+    {% endif %}
 
-    {% for item in ist %}
-    <li>
-    <h2>{{ item.name|capfirst }}</h2>
-    {{ item.age|capfirst }}
-    {{ item.description|capfirst }}
-    </li>
-    <a href="">Want to hire?</a>
+{% if tags_bool %}
+    {% for item in post %}
+        <br><a href="{{ item.get_absolute_url }}">{{ item.title }}</a>
     {% endfor %}
-
-{% include 'main/includes/nav.html' %}
+{% endif %}
+{% show_all_tags %}
 {% endblock %}

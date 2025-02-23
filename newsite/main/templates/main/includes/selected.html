@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<nav>
+    <h1>{{ title }}</h1>
+    {% for item in post %}
+        <br>{{ item.title }}
+        <br><em>{{ item.content }}</em>
+        <br><a href="{{ item.get_absolute_url }}">Want to hire?</a><br>
+    {% endfor %}
+</nav>
+{% endblock %}

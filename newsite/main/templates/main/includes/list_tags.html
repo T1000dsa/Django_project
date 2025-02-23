@@ -1,0 +1,6 @@
+{% if tags %}
+    <p>Tags:</p>
+    {% for tag in tags %}
+    <a href="{{ tag.get_absolute_url }}">{{ tag.tag }}</a><br>
+    {% endfor %}
+{% endif %}
