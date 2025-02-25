@@ -8,7 +8,7 @@ class AddPostForm(forms.ModelForm):
     helmet = forms.ModelChoiceField(queryset=Helmet.objects.all(), required=False, empty_label='Helmet not choiced', label='Helmet')
     class Meta:
         model = Worker
-        fields = ['title', 'slug', 'content', 'is_published', 'cat', 'helmet'] # '__all__'
+        fields = ['title', 'slug', 'content', 'photo', 'is_published', 'cat', 'helmet'] # '__all__'
 
         widgets = {
             'title':forms.TextInput(attrs={'class':'form-input'}),

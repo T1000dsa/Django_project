@@ -2,38 +2,48 @@ from django.shortcuts import render, redirect, get_object_or_404, get_list_or_40
 from django.http import HttpRequest, HttpResponse, HttpResponseNotFound, Http404
 from django.urls import reverse
 from django.template.loader import render_to_string
-from main.models import Worker, Category, TagModel
+from main.models import Worker, Category, TagModel, UploadFiles
 from main.forms import AddPostForm, UploadClassForm
-from datetime import datetime
-
+from django.views import View
+from django.views.generic import TemplateView, ListView, DetailView
 menu = [{'title':'about site', 'url_name':'about_name'}, 
         {'title':'add page', 'url_name':'add_name'}, 
         {'title':'contacts', 'url_name':'contacts_name'}, 
         {'title':'sign in', 'url_name':'sign_name'}]
-def index_http(request:HttpRequest):
+
+class IndexHome(ListView):
+    model = Worker
+    template_name = 'main/index.html'
+    #context_object_name = 'post'
     posts = Worker.published.all().exclude(slug='').select_related('cat')
-    data = {
+    template_name = 'main/index.html'
+    extra_context = {
         'title':'home',
         'menu':menu,
         'post':posts,
         'cat_selected':0,
-        }
-    try:
-        return render(request, 'main/index.html', data)
-    except(Exception) as err:
-        print(err, index_http)
+    }
+    def get_queryset(self):
+        return Worker.published.all().exclude(slug='').select_related('cat')
 
-def handle_uploaded_file(f):
-    timemark = datetime.now().timestamp()
-    with open(f"newsite/uploads/{timemark}_{f.name}", "wb+") as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
+    #def get_context_data(self, **kwargs):
+        #contex = super().get_context_data(**kwargs)
+        #contex['title'] = 'title'
+        #contex['cat_selected'] = int(self.request.GET.get('cat_id', 0))
+        #return contex
+
+#def handle_uploaded_file(f):
+#    timemark = datetime.now().timestamp() 
+#    with open(f"newsite/uploads/{timemark}_{f.name}", "wb+") as destination:
+#       for chunk in f.chunks():
+#           destination.write(chunk)
 
 def about(request:HttpRequest):
     if request.method == 'POST':
         form = UploadClassForm(request.POST, request.FILES)
         if form.is_valid():
-            handle_uploaded_file(form.cleaned_data['file'])
+            fp = UploadFiles(file=form.cleaned_data['file'])
+            fp.save()
 
     else:
         form = UploadClassForm()
@@ -46,28 +56,24 @@ def about(request:HttpRequest):
     return render(request, 'main/about.html', data)
 
 
-def add(request:HttpRequest):
-    if request.method == 'POST':
-        form = AddPostForm(request.POST)
-        if form.is_valid():
-            #print(form.cleaned_data)
-            #try:
-            #    Worker.objects.create(**form.cleaned_data)
-            #    return redirect('home_name')
-            #except Exception as err:
-            #    print(err)
-            #    form.add_error(None, 'Error with adding new data!')
-            form.save()
-            return redirect('home_name')
 
-    else:
-        form = AddPostForm()
+class AddPage(View):
     data = {
             'title':'adding',
             'content_1':'new page adding.',
-            'form':form
+            'form':None
             }
-    return render(request, 'main/add.html', data)
+    
+    def get(self, request:HttpRequest):
+        self.data['form'] = AddPostForm()
+        return render(request, 'main/add.html', self.data)
+    def post(self, request:HttpRequest):
+        form = AddPostForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            self.data['form'] = form
+
+        return redirect('home_name')
 
 
 def contacts(request:HttpRequest):
@@ -90,46 +96,64 @@ def sign(request:HttpRequest):
     return render(request, 'main/sign.html', data)
 
 
-def show_cat(request:HttpRequest, cat_slug):
-    category = get_object_or_404(Category, slug=cat_slug)
-    posts = Worker.objects.filter(cat_id=category.pk).select_related('cat')
-    data = {
-        'title': f'Category: {category.name}',
-        'list':menu,
-        'post':posts,
-        'cat_selected':category.pk
-        }
-    return render(request, 'main/includes/selected.html', data)
+class Show_cat(ListView):
+    model = Category
+    template_name = 'main/includes/selected.html'
+    context_object_name = 'post'
+    allow_empty = False
+    def get_queryset(self):
+        return Worker.published.filter(cat__slug=self.kwargs['cat_slug']).exclude(slug='').select_related('cat')
+    
+    def get_context_data(self, **kwargs):
+        contex = super().get_context_data(**kwargs)
+        cat = contex['post'][0].cat
+        contex['title'] = f'Category: {cat.name}'
+        contex['cat_selected'] = cat.pk
+        return contex
 
 
 def show_post(request:HttpRequest, post_slug):
     db_data = get_object_or_404(Worker, slug=post_slug)
+    print(db_data.photo.url)
     data = {
         'title': 'Show Post',
         'list':menu,
         'post':db_data,
         'cat_selected':0
         }
-    try:
-        return render(request, 'main/post.html', data)
-    except(Exception) as err:
-        print(err, show_tag_postlist)
+    return render(request, 'main/post.html', data)
+
+class Show_Post(DetailView):
+    #model = Worker
+    template_name = 'main/post.html'
+    slug_url_kwarg = 'post_slug'
+    context_object_name = 'post'
+    def get_context_data(self, **kwargs):
+        contex = super().get_context_data(**kwargs)
+        post = contex['object'].title
+        contex['title'] = post
+        return contex
+    def get_object(self, queryset=None):
+        return get_list_or_404(Worker.published, slug=self.kwargs[self.slug_url_kwarg])[0]
 
 
-def show_tag_postlist(request:HttpRequest, tag_slug):
-    tag = get_object_or_404(TagModel, slug=tag_slug)
-    posts = tag.tags.filter(is_published=Worker.Status.Published)
-    data = {
-        'title':f'Tag: {tag.tag}',
-        'menu':menu,
-        'post':posts,
-        'cat_selected':None,
-        'tags_bool':1
-    }
-    try:
-        return render(request,'main/index.html',  data)
-    except(Exception) as err:
-        print(err, show_tag_postlist)
+
+class Show_tag(ListView):
+    model = TagModel
+    template_name = 'main/index.html'
+    def get_queryset(self):
+        data = Worker.published.filter(tags__slug=self.kwargs['tag_slug'])
+        return data
+    
+    def get_context_data(self, **kwargs):
+        contex = super().get_context_data(**kwargs)
+        tag = contex['view'].kwargs
+        contex['title'] = f'tag: {tag['tag_slug']}'
+        contex['post'] = contex['worker_list']
+        contex['tags_bool'] = 1
+        return contex
+
+
 
 def page_not_found(request:HttpRequest, exception):
     return render(request, 'main/not_found.html')

@@ -4,9 +4,14 @@
 <nav>
     <h1>{{ title }}</h1>
     {% for item in post %}
-        <br>{{ item.title }}
-        <br><em>{{ item.content }}</em>
-        <br><a href="{{ item.get_absolute_url }}">Want to hire?</a><br>
+        {% if item.is_published %}
+            <br>{{ item.title }}
+            <br><em>{{ item.content }}</em>
+            {% if item.photo %}
+                <br><img src="{{ item.photo.url }}"  width="100" height="100">
+            {% endif %}
+            <br><a href="{{ item.get_absolute_url }}">Want to hire?</a><br>
+        {% endif %}
     {% endfor %}
 </nav>
 {% endblock %}

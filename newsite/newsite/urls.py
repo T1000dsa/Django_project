@@ -18,15 +18,18 @@ from django.contrib import admin
 from django.urls import path, include
 from main import views
 from debug_toolbar.toolbar import debug_toolbar_urls
-
+from . import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
-
     # ... the rest of your URLconf goes here ... 
 ] + debug_toolbar_urls() 
 
+if settings.DEBUG:
+    urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+print(urlpatterns)
 handler404 = views.page_not_found
 
 admin.site.site_header = 'special admin panel'

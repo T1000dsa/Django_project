@@ -1,6 +1,6 @@
 from django.contrib import admin, messages
 from .models import Worker, Category, TagModel, Helmet
-
+from django.utils.safestring import mark_safe
 class TagFilter(admin.SimpleListFilter):
     title = 'Tags'
     parameter_name = 'status'
@@ -18,22 +18,33 @@ class TagFilter(admin.SimpleListFilter):
 
 @admin.register(Worker)
 class WorkerAdmin(admin.ModelAdmin):
-    fields = ['title', 'slug', 'content', 'tags','cat']
-    #readonly_fields = ['slug']
+    fields = ['title', 'slug', 'photo','photo_tumb', 'content', 'description', 'tags','cat']
+    readonly_fields = ['photo_tumb']
     filter_horizontal = ['tags']
     prepopulated_fields = {'slug':('title', )}
-    list_display = ('title', 'time_create', 'is_published','cat', 'brief')
+    list_display = ('title', 'time_create', 'photo_tumb','is_published','description', 'cat', 'brief',)
     list_display_links =  ('title',)
     ordering = ['id']
-    list_editable = ('is_published',)
+    list_editable = ('is_published','description')
     list_per_page = 5
     actions = ['set_published', 'set_draft']
     search_fields = ['title', 'cat__name']
     list_filter = [TagFilter, 'cat__name', 'is_published']
 
-    @admin.display(description='brief info', ordering='content')
+    save_on_top = True
+
+    @admin.display(description='brief info', ordering='description')
     def brief(self, info:Worker):
-        return f'Length of the description {len(info.content)}'
+        return f'Length of the description {len(info.description)}'
+    
+    @admin.display(description='tumb')
+    def photo_tumb(self, info:Worker):
+        if info.photo:
+            return mark_safe(f'<img src="{info.photo.url}" width="50" height="50">')
+        else:
+            adress = r"\media\photos\None_image\None.png"
+            return mark_safe(f'<img src="{adress}" width="50" height="50">')
+
     
     @admin.action(description='Publish the worker')
     def set_published(self, request, queryset):

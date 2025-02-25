@@ -3,7 +3,7 @@
 {% block content %}
 <h1>{{ title|capfirst }}</h1>
 <p>{{ content_1|capfirst }}</p>
-<form actions="" method="POST">
+<form actions="" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="form-error">{{ form.non_fields_errors }}</div>
     {% for f in form %}

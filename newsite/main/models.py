@@ -15,15 +15,17 @@ class Worker(models.Model):
         Draft = 0, 'Unpublished'
         Published = 1, 'Published'
 
-    title = models.CharField(max_length=256, verbose_name='title')
-    slug = models.SlugField(max_length=256, unique=True, db_index=True, verbose_name='slug')
-    content = models.TextField(blank=True, verbose_name='content')
+    title = models.CharField(max_length=256, verbose_name='Title')
+    slug = models.SlugField(max_length=256, unique=True, db_index=True, verbose_name='Slug')
+    content = models.TextField(blank=True, verbose_name='Content')
+    description = models.TextField(blank=True, null=True, verbose_name='Description')
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(choices=tuple(map(lambda x:(bool(x[0]), x[1]),Status.choices)), default=Status.Draft)
     cat = models.ForeignKey('Category', on_delete=models.PROTECT) # cat.worker_set
     tags = models.ManyToManyField('TagModel', blank=True, related_name='tags')
     helmet = models.OneToOneField('Helmet', on_delete=models.SET_NULL, blank=True, related_name='worhel',null=True)
+    photo = models.ImageField(upload_to='photos/%Y/%m/%d', default=None, blank=True, null=True, verbose_name='Photo')
 
     objects = models.Manager()
     published = PublishedManager()
@@ -38,10 +40,6 @@ class Worker(models.Model):
         verbose_name = 'Best team ever'
         verbose_name_plural = 'Best team ever'
 
-
-    #def save(self, *args, **kwargs):
-    #    self.slug = slugify(self.title)
-    #    super().save(*args, **kwargs)
 
 class Category(models.Model):
 
@@ -66,3 +64,6 @@ class TagModel(models.Model):
 class Helmet(models.Model):
     helmet_name = models.CharField(null=True, default='Helmet', max_length=64)
     usage_count = models.IntegerField(default=0, blank=True)
+
+class UploadFiles(models.Model):
+    file = models.FileField(upload_to='photos_other/%Y/%m/%d')
