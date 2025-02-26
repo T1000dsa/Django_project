@@ -6,10 +6,11 @@
 {% if tags_html %}
 <p>Tags:</p>
     {% for item in tags_html %}
-    </t>{{ item.tag }}<br>
+    </t><a href="{{ item.get_absolute_url }}">{{ item.tag }}</a><br>
     {% endfor %}
 {% endif %}
 {%  endwith %}
+
 {% if post.photo %}
     <img class="img-article-left" src="{{ post.photo.url }}" alt="Error"> 
 {% endif %}

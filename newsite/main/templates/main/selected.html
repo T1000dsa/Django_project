@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ title }}</h1>
+{% include 'main/includes/incl.selected.html' %}
+{% endblock %}
+
+{% block navigation %} 
+{% include 'main/includes/paginator.html' %}
+{% endblock %}

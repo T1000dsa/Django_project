@@ -4,9 +4,21 @@
 <h1>{{ title|capfirst }}</h1>
 <p>{{ content_1|capfirst }}</p>
 <p>{{ content_2|capfirst }}</p>
-<form action="" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <p><button type="submit">Send</button>
-</form>
+{% for i in page_obj %}
+    {{ i }}<br>
+{% endfor %}
+<nav>
+    <ul class="pagination">
+        {% for i in page_obj.paginator.page_range %}
+            {% if selected %}
+                <li lass="page-item active"> 
+                <a class="page-link" href="?page={{ i }}">{{ i }}
+            {% elif selected is None %}
+                <li lass="page-item">
+                <a class="page-link" href="?page={{ i }}">{{ i }}
+            {% endif %}
+                </li>
+        {% endfor %}
+    </ul>
+</nav>
 {% endblock %}
