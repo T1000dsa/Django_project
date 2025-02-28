@@ -8,6 +8,8 @@ from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, FormView, CreateView, UpdateView, DeleteView
 from .utils import DataMixin
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class IndexHome(DataMixin, ListView):
@@ -23,7 +25,6 @@ class IndexHome(DataMixin, ListView):
         return self.get_mixin_context(contex,
                                       index_list=contex['worker_list'])
 
-
 def about(request:HttpRequest):
     data = {
         'title':'about us',
@@ -33,13 +34,36 @@ def about(request:HttpRequest):
         }
     return render(request, 'main/about.html', data)
 
-class AddPage(DataMixin, CreateView):
+class About(DataMixin, FormView):
+    data = {
+        'title':'about us',
+        'content_1':'our company provide service with installing and deinstalling electrecian equipment.',
+        'content_2':'also we can provide other services like cleaning and installing plumbing.',
+        }
+    template_name = 'main/about.html'
+    def get_context_data(self, **kwargs):
+        contex = super().get_context_data(**kwargs)
+        return self.get_mixin_context(
+            contex,
+            **self.data
+            )
+    def query_set(self, request):
+        return request
+
+
+class AddPage(LoginRequiredMixin, CreateView):
     form_class = AddPostForm
     template_name = 'main/add.html'
-    title_page = 'adding'
+    success_url = reverse_lazy('home_name')
 
+    def get_context_data(self, **kwargs):
+        contex = super().get_context_data(**kwargs)
+        contex['title'] = 'adding'
+        return contex
+
+   
     
-class UpdatePage(DataMixin, UpdateView):
+class UpdatePage(LoginRequiredMixin, DataMixin, UpdateView):
     model = Worker
     fields = "__all__" # ['title', 'slug', 'content', 'photo', 'is_published', 'cat', 'helmet']
     template_name = 'main/add.html'
@@ -65,7 +89,7 @@ def sign(request:HttpRequest):
     return render(request, 'main/sign.html', data)
 
 
-class Show_cat(DataMixin, ListView):
+class Show_cat(LoginRequiredMixin, DataMixin, ListView):
     model = Category
     template_name = 'main/selected.html'
     context_object_name = 'post'
@@ -82,8 +106,9 @@ class Show_cat(DataMixin, ListView):
             title=f'Category: {cat.name}',
             cat_selectet = cat.pk
             )
+    
 
-class Show_Post(DataMixin, DetailView):
+class Show_Post(LoginRequiredMixin, DataMixin, DetailView):
     model = Worker
     template_name = 'main/post.html'
     slug_url_kwarg = 'post_slug'
@@ -98,8 +123,8 @@ class Show_Post(DataMixin, DetailView):
         return self.get_mixin_context(contex, 
                                       title=contex['object'].title,
                                       post=contex['object'])
-
-class Show_tag(DataMixin, ListView):
+    
+class Show_tag(LoginRequiredMixin, DataMixin, ListView):
     model = TagModel
     template_name = 'main/index.html'
 
@@ -116,7 +141,7 @@ class Show_tag(DataMixin, ListView):
             post=contex['worker_list'])
     
 
-class DeletePost(DataMixin, DeleteView):
+class DeletePost(LoginRequiredMixin, DataMixin, DeleteView):
     model = Worker
     template_name = 'main/delete_page.html'
     context_object_name = 'post'

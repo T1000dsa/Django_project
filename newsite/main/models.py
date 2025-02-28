@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from django.template.defaultfilters import slugify
+from django.contrib.auth import get_user_model
 # Create your models here.
 # from django.db.models import Q, F, Avg, Sum, Count
 # from main.models import Helmet, Worker, TagModel, Category
@@ -22,10 +23,11 @@ class Worker(models.Model):
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(choices=tuple(map(lambda x:(bool(x[0]), x[1]),Status.choices)), default=Status.Draft)
-    cat = models.ForeignKey('Category', on_delete=models.PROTECT) # cat.worker_set
-    tags = models.ManyToManyField('TagModel', blank=True, related_name='tags')
+    cat = models.ForeignKey('Category', on_delete=models.PROTECT,null=True,blank=True) # cat.worker_set
+    tags = models.ManyToManyField('TagModel', blank=True, related_name='tags', null=True)
     helmet = models.OneToOneField('Helmet', on_delete=models.SET_NULL, blank=True, related_name='worhel',null=True)
     photo = models.ImageField(upload_to='photos/%Y/%m/%d', default=None, blank=True, null=True, verbose_name='Photo')
+    author = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL,default=None, blank=True,null=True, related_name='author_worker')
 
     objects = models.Manager()
     published = PublishedManager()

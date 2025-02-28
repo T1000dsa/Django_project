@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,8 +10,18 @@
 </head>
 <body>
     {% for item in menu %}
-        <a href="{% url item.url_name %}">{{ item.title|capfirst }}</a>
+        <li><a href="{% url item.url_name %}">{{ item.title|capfirst }}</a></li>
     {% endfor %}
+    {% if user.is_authenticated %}
+        
+        <form style="display:inline-block" method="post" action="{% url 'users:logout' %}">
+            {% csrf_token %}
+            <button type="submit">Logout</button></form>
+        <li class="last">{{ user.username }}</li>
+    {% else %}
+        <li class="last"><a href="{% url 'users:login' %}">Sign In</a> | <a href="#">Sign Up</a></li>
+        <li class="last">Anonymous</li>
+    {% endif %}
     <br>
     {% block content %} {% endblock %}
     <br>

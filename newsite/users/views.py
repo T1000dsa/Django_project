@@ -3,25 +3,17 @@ from django.http import HttpRequest, HttpResponse, HttpResponseNotFound, Http404
 from .forms import LoginUserForm
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse, reverse_lazy
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.forms import AuthenticationForm
 # Create your views here.
-def login_user(request:HttpRequest):
-    if request.method == 'POST':
-        form = LoginUserForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            user = authenticate(
-                request, 
-                username=cd['username'],
-                password=cd['password'])
-            if user and user.is_active:
-                login(request, user)
-                return HttpResponseRedirect(reverse('home_name'))
-    else:
-        form = LoginUserForm()
 
+class UserLogin(LoginView):
+    form_class = LoginUserForm
+    template_name = 'users/login.html'
+    extra_context = {
+        'title':'Autorization'
+    }
+    #def get_success_url(self):
+    #   return reverse_lazy('home_name')
 
-    return render(request, 'users/login.html', {'form':form,})
-
-def logout_user(request:HttpRequest):
-    logout(request)
-    return HttpResponseRedirect(reverse('users:login'))
+class LogoutUser(LogoutView):pass

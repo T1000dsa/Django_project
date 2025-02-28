@@ -1,8 +1,13 @@
 from django import template
 import main.views as views
 from main.models import Worker, Category, TagModel
+from main.utils import menu
 
 register = template.Library()
+
+@register.simple_tag
+def get_menu():
+    return menu
 
 @register.inclusion_tag('main/includes/list_categories.html')
 def show_categories(cat_selected=0):
