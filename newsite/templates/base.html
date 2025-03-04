@@ -17,10 +17,15 @@
         <form style="display:inline-block" method="post" action="{% url 'users:logout' %}">
             {% csrf_token %}
             <button type="submit">Logout</button></form>
-        <li class="last">{{ user.username }}</li>
+        <li><a href="{% url 'users:profile' %}">{{ user.username }}</a></li>
+        {% if user.first_name %}
+            <li class="last">{{ user.first_name }}</li>
+        {% else %}
+            <li class="last">Anon</li>
+        {% endif %}
     {% else %}
-        <li class="last"><a href="{% url 'users:login' %}">Sign In</a> | <a href="#">Sign Up</a></li>
-        <li class="last">Anonymous</li>
+    <li class="last"><a href="{% url 'users:login' %}">Sign In</a> | <a href="{% url 'users:register' %}">Sign Up</a></li>
+    <li class="last">Anon</li>
     {% endif %}
     <br>
     {% block content %} {% endblock %}

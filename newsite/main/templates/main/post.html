@@ -14,9 +14,9 @@
 {% if post.photo %}
     <img class="img-article-left" src="{{ post.photo.url }}" alt="Error"> 
 {% endif %}
-
 <p>{{ post.content }}</p>
 {% if post.description %}
     <p>{{ post.description }}</p>
 {% endif %}
+<p><a href="{{ post.get_pk }}">Edit post?</a></p>
 {% endblock %}

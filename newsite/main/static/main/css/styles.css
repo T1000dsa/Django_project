@@ -423,7 +423,7 @@ ul.lang-list li a:hover {color: #fdc073;}
 }
 .list-pages a {
 	color: #000;
-	font-size: 24px;
+	font-size: 30px;
 	text-decoration: none;
 }
 .list-pages .page-num, .page-num-selected {
@@ -870,7 +870,7 @@ ul.lang-list li a:hover {color: #fdc073;}
 }
 .list-pages a {
 	color: #000;
-	font-size: 24px;
+	font-size: 30px;
 	text-decoration: none;
 }
 .list-pages .page-num, .page-num-selected {
@@ -887,8 +887,9 @@ ul.lang-list li a:hover {color: #fdc073;}
 .list-pages .page-num-selected {
 	border: none;
 	color: #000;
-	font-size: 20px;
+	font-size: 30px;
 }
 .list-pages .page-num-selected:hover {
 	box-shadow: none;
 }
+

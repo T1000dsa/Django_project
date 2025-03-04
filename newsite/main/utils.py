@@ -1,13 +1,14 @@
 menu = [{'title':'about site', 'url_name':'about_name'}, 
         {'title':'addpage', 'url_name':'add_name'}, 
         {'title':'contacts', 'url_name':'contacts_name'}, 
-        {'title':'home', 'url_name':'home_name'},]
+        {'title':'home', 'url_name':'home_name'},
+        ]
 
 class DataMixin:
     index_list = None
     title_page = None
     cat_selected = None
-    paginate_by = 5
+    paginate_by = 10
     post = None
     extra_context  = {}
     

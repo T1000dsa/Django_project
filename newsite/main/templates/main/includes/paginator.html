@@ -12,7 +12,7 @@
             {% if page_obj.number == i %}
             <li class="page-num page-num-selected">{{ i }}</li>
             {% elif i >= page_obj.number|add:-2 and i <= page_obj.number|add:2 %}
-            <li lass="page-num"> 
+            <li class="page-num"> 
                 <a class="page-link" href="?page={{ i }}">{{ i }}</a>
             </li>
             {% endif %}

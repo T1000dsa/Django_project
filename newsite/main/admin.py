@@ -35,7 +35,10 @@ class WorkerAdmin(admin.ModelAdmin):
 
     @admin.display(description='brief info', ordering='description')
     def brief(self, info:Worker):
-        return f'Length of the description {len(info.description)}'
+        if info.description:
+            return f'Length of the description {len(info.description)}'
+        else:
+            return f'There is no description'
     
     @admin.display(description='tumb')
     def photo_tumb(self, info:Worker):

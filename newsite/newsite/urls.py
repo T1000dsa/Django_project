@@ -30,7 +30,6 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-print(urlpatterns)
 handler404 = views.page_not_found
 
 admin.site.site_header = 'special admin panel'

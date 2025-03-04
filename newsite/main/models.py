@@ -36,6 +36,9 @@ class Worker(models.Model):
     def get_absolute_url(self):
         return reverse('show', kwargs={'post_slug':self.slug})
     
+    def get_pk(self):
+        return reverse('update', kwargs={'pk':self.pk})
+    
     def __str__(self):
         return self.title
     class Meta:

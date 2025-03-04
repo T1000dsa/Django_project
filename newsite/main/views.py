@@ -15,10 +15,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 class IndexHome(DataMixin, ListView):
     model = Worker
     template_name = 'main/index.html'
-    title_page = 'home'
-
-    def get_queryset(self):
-        return Worker.published.all()
+    title_page = 'home' 
     
     def get_context_data(self, **kwargs):
         contex = super().get_context_data(**kwargs)
@@ -34,7 +31,7 @@ def about(request:HttpRequest):
         }
     return render(request, 'main/about.html', data)
 
-class About(DataMixin, FormView):
+"""class About(DataMixin, FormView):
     data = {
         'title':'about us',
         'content_1':'our company provide service with installing and deinstalling electrecian equipment.',
@@ -48,7 +45,7 @@ class About(DataMixin, FormView):
             **self.data
             )
     def query_set(self, request):
-        return request
+        return request"""
 
 
 class AddPage(LoginRequiredMixin, CreateView):
@@ -61,9 +58,8 @@ class AddPage(LoginRequiredMixin, CreateView):
         contex['title'] = 'adding'
         return contex
 
-   
-    
-class UpdatePage(LoginRequiredMixin, DataMixin, UpdateView):
+
+class UpdatePage(LoginRequiredMixin, UpdateView):
     model = Worker
     fields = "__all__" # ['title', 'slug', 'content', 'photo', 'is_published', 'cat', 'helmet']
     template_name = 'main/add.html'
@@ -115,15 +111,15 @@ class Show_Post(LoginRequiredMixin, DataMixin, DetailView):
     context_object_name = 'post'
     
 
-    def get_object(self, queryset=None):
-        return get_list_or_404(Worker.published, slug=self.kwargs[self.slug_url_kwarg])[0]
+    
     
     def get_context_data(self, **kwargs):
         contex = super().get_context_data(**kwargs)
         return self.get_mixin_context(contex, 
                                       title=contex['object'].title,
                                       post=contex['object'])
-    
+
+
 class Show_tag(LoginRequiredMixin, DataMixin, ListView):
     model = TagModel
     template_name = 'main/index.html'
@@ -152,6 +148,7 @@ class DeletePost(LoginRequiredMixin, DataMixin, DeleteView):
             contex, 
             title='delete', 
             )
+
 
 def page_not_found(request:HttpRequest, exception):
     return render(request, 'main/not_found.html')
