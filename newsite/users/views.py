@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect
-from .forms import LoginUserForm, RegisterUserForm, ProfileUserForm
+from .forms import LoginUserForm, RegisterUserForm, ProfileUserForm, UserPasswordForm
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse, reverse_lazy
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.contrib.auth.forms import AuthenticationForm
 from django.views.generic import TemplateView, ListView, DetailView, FormView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
+
 # Create your views here.
 
 class UserLogin(LoginView):
@@ -38,5 +39,29 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
         return reverse_lazy('users:profile')
     def get_object(self, queryset = None):
         return self.request.user
+    
+
+class UserPassChange(PasswordChangeView):
+    form_class = UserPasswordForm
+    success_url = reverse_lazy("users:password_change_done")
+    template_name = "users/password_change_form.html"
+
+class PasswordChangeDoneViewMofify(PasswordChangeDoneView):
+    template_name = 'users/password_change_done.html'
 
 class LogoutUser(LogoutView):pass
+
+class PassReset(PasswordResetView):
+    template_name = 'users/password_reset_form.html'
+    email_template_name = 'users/password_reset_email.html'
+    success_url = reverse_lazy('users:password_reset_done')
+
+class PassResetDone(PasswordResetDoneView):
+    template_name = 'users/password_reset_done.html'
+
+class PassConfirm(PasswordResetConfirmView):
+    template_name = 'users/password_reset_confirm.html'
+    success_url = reverse_lazy('users:password_reset_complete')
+
+class PassResetComplete(PasswordResetCompleteView):
+    template_name = 'users/password_reset_complete.html'

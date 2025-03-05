@@ -142,7 +142,22 @@ LOGIN_REDIRECT_URL = 'home_name'
 LOGOUT_REDIRECT_URL = 'home_name'
 LOGIN_URL = 'users:login'
 
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_FILE_PATH = "/tmp/app-messages"  # change this to a proper location
+
 AUTHENTIFICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'users.authentification.EmailAuthBackend'
 ]
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'marselkhasanov1234567890@gmail.com'
+EMAIL_HOST_PASSWORD = 'mavd oavb zgjr sngg'
+EMAIL_USE_SSL = True
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+SERVER_EMAIL = EMAIL_HOST_USER
+EMAIL_ADMIN = EMAIL_HOST_USER
+
+AUTH_USER_MODEL = 'users.User'
