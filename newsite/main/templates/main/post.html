@@ -18,5 +18,7 @@
 {% if post.description %}
     <p>{{ post.description }}</p>
 {% endif %}
-<p><a href="{{ post.get_pk }}">Edit post?</a></p>
+{% if perms.main.change_worker %}
+    <p><a href="{{ post.get_pk }}">Edit post</a></p>
+{% endif %}   
 {% endblock %}

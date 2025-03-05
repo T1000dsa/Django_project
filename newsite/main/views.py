@@ -8,8 +8,8 @@ from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, FormView, CreateView, UpdateView, DeleteView
 from .utils import DataMixin
 from django.core.paginator import Paginator
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
 class IndexHome(DataMixin, ListView):
@@ -48,10 +48,11 @@ def about(request:HttpRequest):
         return request"""
 
 
-class AddPage(LoginRequiredMixin, CreateView):
+class AddPage(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     form_class = AddPostForm
     template_name = 'main/add.html'
     success_url = reverse_lazy('home_name')
+    permission_required = 'main.add_worker'
 
     def get_context_data(self, **kwargs):
         contex = super().get_context_data(**kwargs)
@@ -59,14 +60,15 @@ class AddPage(LoginRequiredMixin, CreateView):
         return contex
 
 
-class UpdatePage(LoginRequiredMixin, UpdateView):
+class UpdatePage(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Worker
     fields = "__all__" # ['title', 'slug', 'content', 'photo', 'is_published', 'cat', 'helmet']
     template_name = 'main/add.html'
     success_url = reverse_lazy('home_name')
     title_page = 'editing'
+    permission_required = 'main.change_worker'
 
-
+@permission_required(perm='main.add_worker', raise_exception=True)
 def contacts(request:HttpRequest):
     data = {
         'title':'contacts',

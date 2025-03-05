@@ -8,6 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.views.generic import TemplateView, ListView, DetailView, FormView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
+import newsite.settings as sett
 
 # Create your views here.
 
@@ -32,7 +33,8 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
     form_class = ProfileUserForm
     template_name = 'users/profile.html'
     extra_context = {
-        'title':'Profile'
+        'title':'Profile',
+        'default_image':sett.DEFAULT_USER_IMAGE
     }
 
     def get_success_url(self):
